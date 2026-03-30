@@ -663,49 +663,52 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr id="rec-row-1">
           <td><span class="badge b-blue">OSI Pi</span></td>
           <td>Comp Unit 3</td>
           <td>Controlled shutdown in 4 hrs — vibration + lube oil predict seal failure</td>
           <td><span class="badge b-red">Critical</span></td>
           <td><span style="color:var(--green);">-$420K avoid</span></td>
-          <td><button class="act-btn">Ask AI →</button></td>
+          <td><button class="act-btn" id="rec-btn-1" onclick="showRec(1,this)">Ask AI →</button></td>
         </tr>
-        <tr>
+        <tr id="rec-row-2">
           <td><span class="badge b-amber">SCADA</span></td>
           <td>Pipeline Seg 7</td>
           <td>Dispatch pig run — pressure approaching MAOP, blockage suspected</td>
           <td><span class="badge b-red">High</span></td>
           <td><span style="color:var(--red);">-$180K exp.</span></td>
-          <td><button class="act-btn">Ask AI →</button></td>
+          <td><button class="act-btn" id="rec-btn-2" onclick="showRec(2,this)">Ask AI →</button></td>
         </tr>
-        <tr>
+        <tr id="rec-row-3">
           <td><span class="badge b-purple">Gensuite</span></td>
           <td>Comp Stn A</td>
           <td>Close MOC-0441 before WO-4821 proceeds — PSM requirement, 12 days overdue</td>
           <td><span class="badge b-amber">Medium</span></td>
           <td><span style="color:var(--amber);">Compliance</span></td>
-          <td><button class="act-btn">Ask AI →</button></td>
+          <td><button class="act-btn" id="rec-btn-3" onclick="showRec(3,this)">Ask AI →</button></td>
         </tr>
-        <tr>
+        <tr id="rec-row-4">
           <td><span class="badge" style="background:rgba(94,234,212,.12);color:#5eead4;">R. Angle</span></td>
           <td>Pecos Terminal</td>
           <td>Immediate meter calibration — contract compliance breach in 48 hrs</td>
           <td><span class="badge b-amber">Medium</span></td>
           <td><span style="color:var(--red);">-$18K/day</span></td>
-          <td><button class="act-btn">Ask AI →</button></td>
+          <td><button class="act-btn" id="rec-btn-4" onclick="showRec(4,this)">Ask AI →</button></td>
         </tr>
-        <tr>
+        <tr id="rec-row-5">
           <td><span class="badge b-green">SAP</span></td>
           <td>All stations</td>
           <td>Rebalance compression load — Units 2 &amp; 4 imbalanced, 8% fuel savings available</td>
           <td><span class="badge b-blue">Low</span></td>
           <td><span style="color:var(--green);">+$31K/mo</span></td>
-          <td><button class="act-btn">Ask AI →</button></td>
+          <td><button class="act-btn" id="rec-btn-5" onclick="showRec(5,this)">Ask AI →</button></td>
         </tr>
       </tbody>
     </table>
   </div>
+
+  <!-- REC DETAIL PANEL — injected below table on click -->
+  <div id="rec-detail-panel" style="display:none; margin-bottom:28px;"></div>
 
   <!-- WORK ORDER TABLE -->
   <div class="section-label">Active work orders &amp; incidents</div>
@@ -1018,8 +1021,262 @@
   });
 
   /* ══════════════════════════════════════════════
-     QUERY BUTTON RESPONSES
+     RECOMMENDATION TABLE — ASK AI BUTTONS
   ══════════════════════════════════════════════ */
+
+  const REC_DATA = {
+
+    1: {
+      title: 'Comp Unit 3 — controlled shutdown · OSI Pi + SAP + Gensuite',
+      risk: 'Critical', riskColor: '#ef4444',
+      cost: '-$420K avoided', costColor: '#22c55e',
+      html: `
+        <div class="resp-grid-4" style="margin-bottom:14px;">
+          <div class="resp-kpi"><div class="resp-kpi-label">Current vibration</div><div class="resp-kpi-val" style="color:#ef4444;">7.8 mm/s</div><div class="resp-kpi-note" style="color:#ef4444;">ISO 10816 limit 4.5 mm/s</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Lube oil temperature</div><div class="resp-kpi-val" style="color:#ef4444;">94 °C</div><div class="resp-kpi-note" style="color:#f59e0b;">Normal: 70–82 °C</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">PM overdue by</div><div class="resp-kpi-val" style="color:#f59e0b;">97 hrs</div><div class="resp-kpi-note" style="color:#f59e0b;">Interval: 750 hrs</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">AI failure probability</div><div class="resp-kpi-val" style="color:#ef4444;">91%</div><div class="resp-kpi-note" style="color:#ef4444;">Within 6-hour window</div></div>
+        </div>
+        <div class="resp-grid-2">
+          <div class="resp-card">
+            <div class="resp-card-title">Step-by-step shutdown procedure</div>
+            <div class="resp-card-sub">Sequence validated against SAP SOPs · estimated 12–16 hrs total</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-num" style="color:#ef4444;">01</div><div><div class="step-body"><strong style="color:#fff;">Notify control room and field supervisor immediately.</strong> Confirm Gensuite MOC-0441 is closed and PTW-2291 is active before any field activity begins. This is a PSM-mandatory prerequisite.</div><div class="step-meta">0–30 min &nbsp;·&nbsp; <span class="src-cite sc-gen">Gensuite</span> MOC-0441 <span class="badge-sm b-red-sm">Prerequisite</span></div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f97316;">02</div><div><div class="step-body"><strong style="color:#fff;">Ramp up Units 1, 2 and 4</strong> to compensate for Unit 3 load. SCADA set-points: Unit 2 suction from 58% → 78%, Unit 4 from 91% → 82% (within BEP range). Verify throughput holds above 8.9 MMBTU/d.</div><div class="step-meta">30–60 min &nbsp;·&nbsp; <span class="src-cite sc-sca">SCADA</span> load transfer</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f59e0b;">03</div><div><div class="step-body"><strong style="color:#fff;">Isolate Unit 3 suction and discharge valves.</strong> Vent to flare per SOP-COMP-007. Confirm zero energy state — lock out / tag out per SAP WO-4821 LOTO checklist.</div><div class="step-meta">60–90 min &nbsp;·&nbsp; <span class="src-cite sc-sap">SAP</span> WO-4821 LOTO</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#60a5fa;">04</div><div><div class="step-body"><strong style="color:#fff;">Remove and inspect mechanical seal assembly.</strong> Replace seal faces, O-rings and lube oil cooler bypass valve (root cause). Parts confirmed in Midland warehouse — seal kit #SK-3841, bypass valve #BV-0221.</div><div class="step-meta">2–10 hrs &nbsp;·&nbsp; <span class="src-cite sc-sap">SAP</span> parts confirmed in stock</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#22c55e;">05</div><div><div class="step-body"><strong style="color:#fff;">Recommission and return to service.</strong> Slow-roll test, vibration baseline check (target: &lt;2.5 mm/s), lube oil flush. Update OSI Pi baseline tag CU3.VIB.X. Close WO-4821 in SAP and record as-found data.</div><div class="step-meta">10–16 hrs &nbsp;·&nbsp; <span class="src-cite sc-pi">OSI Pi</span> baseline reset</div></div></div>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-title">Cost avoidance breakdown</div>
+            <div class="resp-card-sub">Planned shutdown vs. unplanned catastrophic failure</div>
+            <div class="finding-row"><span class="finding-label">Seal kit &amp; labour (planned)</span><span class="finding-val" style="color:#22c55e;">$28K</span></div>
+            <div class="finding-row"><span class="finding-label">Production deferral (12 hrs × $9.14M/d)</span><span class="finding-val" style="color:#f59e0b;">$4.6K</span></div>
+            <div class="finding-row"><span class="finding-label" style="font-weight:600;color:#fff;">Total planned cost</span><span class="finding-val" style="color:#22c55e;font-size:13px;">$32.6K</span></div>
+            <div style="height:1px;background:var(--border);margin:10px 0;"></div>
+            <div class="finding-row"><span class="finding-label">Rotor replacement (if seal fails)</span><span class="finding-val" style="color:#ef4444;">$180K</span></div>
+            <div class="finding-row"><span class="finding-label">Unplanned downtime (72–96 hrs)</span><span class="finding-val" style="color:#ef4444;">$92K</span></div>
+            <div class="finding-row"><span class="finding-label">Pipeline pressure upset / secondary damage</span><span class="finding-val" style="color:#ef4444;">$90K est.</span></div>
+            <div class="finding-row"><span class="finding-label">Incident investigation &amp; reporting</span><span class="finding-val" style="color:#ef4444;">$60K</span></div>
+            <div class="finding-row" style="border-top:1px solid var(--border);"><span class="finding-label" style="font-weight:600;color:#fff;">Total unplanned cost</span><span class="finding-val" style="color:#ef4444;font-size:13px;">$422K+</span></div>
+            <div style="margin-top:12px;padding:10px 12px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);font-size:12px;color:#4ade80;">
+              Net cost avoidance: <strong>$389K</strong> by acting now vs. waiting for failure.
+            </div>
+          </div>
+        </div>`
+    },
+
+    2: {
+      title: 'Pipeline Seg 7 — pig run dispatch &amp; pressure management · SCADA + OSI Pi',
+      risk: 'High', riskColor: '#ef4444',
+      cost: '-$180K exposure', costColor: '#ef4444',
+      html: `
+        <div class="resp-grid-4" style="margin-bottom:14px;">
+          <div class="resp-kpi"><div class="resp-kpi-label">Current pressure</div><div class="resp-kpi-val" style="color:#f59e0b;" id="rec-press-live">842 psig</div><div class="resp-kpi-note" style="color:#f59e0b;">MAOP: 880 psig</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Pressure rate of rise</div><div class="resp-kpi-val" style="color:#ef4444;">+0.4 psig/min</div><div class="resp-kpi-note" style="color:#ef4444;">Time to MAOP: ~95 min</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Flow velocity drop</div><div class="resp-kpi-val" style="color:#f59e0b;">-6%</div><div class="resp-kpi-note" style="color:#f59e0b;">Over last 2 hrs — blockage indicator</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">MAOP margin remaining</div><div class="resp-kpi-val" style="color:#f59e0b;">4.3%</div><div class="resp-kpi-note" style="color:#ef4444;">Minimum safe margin: 10%</div></div>
+        </div>
+        <div class="resp-grid-2">
+          <div class="resp-card">
+            <div class="resp-card-title">Immediate actions — next 2 hours</div>
+            <div class="resp-card-sub">SCADA control room + field operations</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-num" style="color:#ef4444;">NOW</div><div><div class="step-body"><strong style="color:#fff;">Throttle Seg 7 inlet flow by 8%</strong> via SCADA valve CV-0741. This reduces pressure rate of rise and buys approximately 3 hours of safe operating margin while investigation proceeds. Notify SCADA operator to monitor every 5 minutes.</div><div class="step-meta"><span class="src-cite sc-sca">SCADA</span> valve CV-0741 &nbsp;·&nbsp; <span class="badge-sm b-red-sm">Do immediately</span></div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f97316;">30 min</div><div><div class="step-body"><strong style="color:#fff;">Mobilise pig launcher crew</strong> at Midland inlet. Deploy 4-inch cleaning pig to clear suspected partial blockage. Pig receiver at Pecos Terminal is already staffed. Estimated pig run transit time: 4.2 hrs at current flow velocity.</div><div class="step-meta">Crew on-site · <span class="src-cite sc-sap">SAP</span> WO-4788 (new) · est. 6 hrs total</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f59e0b;">2 hrs</div><div><div class="step-body"><strong style="color:#fff;">Check Pecos valve cluster</strong> for partial closure — OSI Pi flow data shows the pressure drop profile is consistent with a valve not fully open at the downstream cluster (CV-0812 or CV-0814). Inspect both manually.</div><div class="step-meta"><span class="src-cite sc-pi">OSI Pi</span> pressure differential analysis</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#22c55e;">Post-pig</div><div><div class="step-body"><strong style="color:#fff;">Return inlet flow to 100%</strong> once pig is received at Pecos and pressure confirms normal. Review SCADA alarm set-points — the HH alarm at 860 psig is too close to MAOP; recommend reducing to 845 psig to provide earlier warning.</div><div class="step-meta"><span class="src-cite sc-sca">SCADA</span> alarm configuration update</div></div></div>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-title">Blockage diagnosis — AI analysis</div>
+            <div class="resp-card-sub">OSI Pi pressure differential · last 6 hrs</div>
+            <div class="finding-row"><span class="finding-label">Pressure delta (inlet vs. outlet)</span><span class="finding-val" style="color:#ef4444;">+38 psig above normal</span></div>
+            <div class="finding-row"><span class="finding-label">Flow velocity (Midland inlet)</span><span class="finding-val" style="color:#f59e0b;">12.4 ft/s → 11.7 ft/s</span></div>
+            <div class="finding-row"><span class="finding-label">Flow velocity (Pecos outlet)</span><span class="finding-val" style="color:#ef4444;">12.4 ft/s → 10.9 ft/s</span></div>
+            <div class="finding-row"><span class="finding-label">AI diagnosis</span><span class="finding-val" style="color:#f59e0b;">Partial blockage — 35–45%</span></div>
+            <div class="finding-row"><span class="finding-label">Likely location</span><span class="finding-val" style="color:#f59e0b;">km 47–52, near Pecos cluster</span></div>
+            <div class="finding-row"><span class="finding-label">Probable cause</span><span class="finding-val" style="color:#60a5fa;">Hydrate or wax deposit</span></div>
+            <div class="finding-row"><span class="finding-label">Last pig run</span><span class="finding-val" style="color:#ef4444;">127 days ago (max: 90)</span></div>
+            <div class="finding-row"><span class="finding-label">Financial exposure if MAOP breach</span><span class="finding-val" style="color:#ef4444;">$180K+ regulatory + repair</span></div>
+            <div style="margin-top:12px;padding:10px 12px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);font-size:12px;color:#f87171;">
+              If pressure reaches MAOP and ESD trips, estimated 18–24 hr full-line shutdown: $76K lost throughput + mandatory PHMSA notification.
+            </div>
+          </div>
+        </div>`
+    },
+
+    3: {
+      title: 'MOC-0441 closure — PSM compliance · Gensuite + SAP',
+      risk: 'Medium', riskColor: '#f59e0b',
+      cost: 'Compliance risk', costColor: '#f59e0b',
+      html: `
+        <div class="resp-grid-4" style="margin-bottom:14px;">
+          <div class="resp-kpi"><div class="resp-kpi-label">MOC status</div><div class="resp-kpi-val" style="color:#ef4444;">OVERDUE</div><div class="resp-kpi-note" style="color:#ef4444;">12 days past due date</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Linked work order</div><div class="resp-kpi-val" style="color:#f59e0b;">WO-4821</div><div class="resp-kpi-note" style="color:#f59e0b;">Cannot proceed without MOC close</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Regulatory standard</div><div class="resp-kpi-val" style="color:#60a5fa;">OSHA PSM</div><div class="resp-kpi-note" style="color:#60a5fa;">29 CFR 1910.119</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Penalty exposure</div><div class="resp-kpi-val" style="color:#ef4444;">$15K+</div><div class="resp-kpi-note" style="color:#ef4444;">Per violation per day</div></div>
+        </div>
+        <div class="resp-grid-2">
+          <div class="resp-card">
+            <div class="resp-card-title">MOC-0441 closure checklist</div>
+            <div class="resp-card-sub">Gensuite workflow · all steps required before WO-4821 field work begins</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-num" style="color:#ef4444;">01</div><div><div class="step-body"><strong style="color:#fff;">Process hazard review sign-off.</strong> Compressor seal change on a unit with active gas leak risk requires hazard review. Assign to process safety lead — estimated 2 hrs. Document in Gensuite MOC-0441 Section 4.</div><div class="step-meta"><span class="src-cite sc-gen">Gensuite</span> MOC-0441 §4 · Responsible: PSM Lead</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f97316;">02</div><div><div class="step-body"><strong style="color:#fff;">Update P&amp;ID redlines.</strong> The bypass valve replacement (lube oil cooler circuit) changes the as-built configuration. Engineering must mark up drawing P&amp;ID-COMP-014 and stamp as temporary change pending formal revision.</div><div class="step-meta"><span class="src-cite sc-sap">SAP</span> DMS drawing P&amp;ID-COMP-014 · Engineering team</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f59e0b;">03</div><div><div class="step-body"><strong style="color:#fff;">Operator training verification.</strong> Confirm the two technicians assigned to WO-4821 have completed Seal Change SOP-COMP-007 training. Check SAP HR training records — if not current, 30-min field briefing is acceptable per site procedure.</div><div class="step-meta"><span class="src-cite sc-sap">SAP</span> HR training records · Ops Supervisor sign-off</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#60a5fa;">04</div><div><div class="step-body"><strong style="color:#fff;">Issue permit-to-work PTW-2291.</strong> Hot work and confined space permits required. Gas test within 1 hour of work commencement. Gensuite PTW linked to MOC-0441 — approve and activate simultaneously.</div><div class="step-meta"><span class="src-cite sc-gen">Gensuite</span> PTW-2291 · Area Authority sign-off</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#22c55e;">05</div><div><div class="step-body"><strong style="color:#fff;">Post-startup verification.</strong> After Unit 3 returns to service, complete MOC-0441 post-startup checklist in Gensuite within 72 hrs. Confirm P&amp;ID formal revision is submitted to engineering queue within 30 days.</div><div class="step-meta"><span class="src-cite sc-gen">Gensuite</span> MOC closure · 72-hr deadline post-restart</div></div></div>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-title">Regulatory exposure if MOC skipped</div>
+            <div class="resp-card-sub">OSHA PSM 29 CFR 1910.119 · PHMSA 49 CFR 192</div>
+            <div class="finding-row"><span class="finding-label">OSHA PSM violation (per day)</span><span class="finding-val" style="color:#ef4444;">Up to $15,625</span></div>
+            <div class="finding-row"><span class="finding-label">PHMSA pipeline safety (per incident)</span><span class="finding-val" style="color:#ef4444;">Up to $257,664</span></div>
+            <div class="finding-row"><span class="finding-label">Insurance claim impact</span><span class="finding-val" style="color:#f59e0b;">Policy may be voided</span></div>
+            <div class="finding-row"><span class="finding-label">Current days overdue</span><span class="finding-val" style="color:#ef4444;">12 days</span></div>
+            <div class="finding-row"><span class="finding-label">Estimated penalty accrued</span><span class="finding-val" style="color:#ef4444;">$187K (if cited)</span></div>
+            <div class="finding-row"><span class="finding-label">Time to close MOC-0441</span><span class="finding-val" style="color:#22c55e;">~4 hrs with focus</span></div>
+            <div class="finding-row"><span class="finding-label">WO-4821 can start after MOC close</span><span class="finding-val" style="color:#22c55e;">Yes — same shift</span></div>
+            <div style="margin-top:12px;padding:10px 12px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:var(--r);font-size:12px;color:#c4b5fd;">
+              PSM violations frequently result in multi-year audit programs. Close MOC-0441 today — the 4-hour effort eliminates both the regulatory exposure and unblocks the critical Unit 3 repair.
+            </div>
+          </div>
+        </div>`
+    },
+
+    4: {
+      title: 'Pecos Terminal — custody meter recalibration · Right Angle + SAP',
+      risk: 'Medium', riskColor: '#f59e0b',
+      cost: '-$18K/day revenue leakage', costColor: '#ef4444',
+      html: `
+        <div class="resp-grid-4" style="margin-bottom:14px;">
+          <div class="resp-kpi"><div class="resp-kpi-label">Meter deviation</div><div class="resp-kpi-val" style="color:#ef4444;">1.2%</div><div class="resp-kpi-note" style="color:#ef4444;">Primary vs. check meter</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Daily revenue leakage</div><div class="resp-kpi-val" style="color:#ef4444;">$18K/day</div><div class="resp-kpi-note" style="color:#ef4444;">At 9.14 MMBTU/d flow</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Days since calibration</div><div class="resp-kpi-val" style="color:#ef4444;">127 days</div><div class="resp-kpi-note" style="color:#ef4444;">Contract max: 90 days</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Contract breach deadline</div><div class="resp-kpi-val" style="color:#f59e0b;">48 hrs</div><div class="resp-kpi-note" style="color:#f59e0b;">Shipper A MSA clause 14.3</div></div>
+        </div>
+        <div class="resp-grid-2">
+          <div class="resp-card">
+            <div class="resp-card-title">Calibration procedure — WO-4751</div>
+            <div class="resp-card-sub">Right Angle metering standard · AGA-9 ultrasonic meter protocol</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-num" style="color:#f97316;">01</div><div><div class="step-body"><strong style="color:#fff;">Notify all three shippers</strong> (A, B, C) of scheduled meter maintenance via Right Angle nomination portal before work commences. Clause 14.3 requires minimum 24-hr notice. Send notification immediately.</div><div class="step-meta"><span class="src-cite sc-ra">Right Angle</span> nomination portal · 24-hr notice required</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#f59e0b;">02</div><div><div class="step-body"><strong style="color:#fff;">Switch custody measurement to check meter</strong> (secondary ultrasonic, RA-CM-002) while primary is offline for calibration. Confirm check meter was last calibrated 34 days ago — within tolerance.</div><div class="step-meta"><span class="src-cite sc-ra">Right Angle</span> RA-CM-002 · last cal: 34 days ago ✓</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#60a5fa;">03</div><div><div class="step-body"><strong style="color:#fff;">In-situ calibration using master meter.</strong> Connect portable master meter (AGA-9 class) in series with RA-CM-001. Run calibration at three flow points: 20%, 60%, and 100% of operating capacity. Adjust meter factor in FLOW-X computer.</div><div class="step-meta">Est. 3 hrs · SAP WO-4751 · certified metering technician</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#22c55e;">04</div><div><div class="step-body"><strong style="color:#fff;">Issue calibration certificate and notify shippers.</strong> As-found deviation of 1.2% must be reported to all shippers with retroactive volume correction calculation going back to last known good calibration date. Right Angle will auto-calculate imbalance adjustments.</div><div class="step-meta"><span class="src-cite sc-ra">Right Angle</span> imbalance module · <span class="src-cite sc-sap">SAP</span> close WO-4751</div></div></div>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-title">Financial &amp; contractual exposure</div>
+            <div class="resp-card-sub">Right Angle revenue data · shipper MSA terms</div>
+            <div class="finding-row"><span class="finding-label">Revenue leakage rate</span><span class="finding-val" style="color:#ef4444;">$18,280/day</span></div>
+            <div class="finding-row"><span class="finding-label">Leakage since overdue date (37 days)</span><span class="finding-val" style="color:#ef4444;">$676K cumulative</span></div>
+            <div class="finding-row"><span class="finding-label">Retroactive correction owed to shippers</span><span class="finding-val" style="color:#f59e0b;">Est. $338K (50% recovery)</span></div>
+            <div class="finding-row"><span class="finding-label">Net revenue impact after correction</span><span class="finding-val" style="color:#f59e0b;">-$338K</span></div>
+            <div class="finding-row"><span class="finding-label">Shipper A contract clause</span><span class="finding-val" style="color:#ef4444;">14.3 — breach in 48 hrs</span></div>
+            <div class="finding-row"><span class="finding-label">Shipper B contract clause</span><span class="finding-val" style="color:#f59e0b;">11.7 — notice only</span></div>
+            <div class="finding-row"><span class="finding-label">Calibration cost (WO-4751)</span><span class="finding-val" style="color:#22c55e;">$4,200</span></div>
+            <div class="finding-row"><span class="finding-label">Stop the clock on leakage (after cal)</span><span class="finding-val" style="color:#22c55e;">$18K/day saved</span></div>
+            <div style="margin-top:12px;padding:10px 12px;background:rgba(94,234,212,.06);border:1px solid rgba(94,234,212,.2);border-radius:var(--r);font-size:12px;color:#5eead4;">
+              WO-4751 should have been prioritised 37 days ago. Escalate to supervisor now — $4,200 calibration prevents $18K/day ongoing leakage and contract breach penalties.
+            </div>
+          </div>
+        </div>`
+    },
+
+    5: {
+      title: 'Compression load rebalancing — fuel gas optimisation · OSI Pi + SAP',
+      risk: 'Low', riskColor: '#60a5fa',
+      cost: '+$31K/month saving', costColor: '#22c55e',
+      html: `
+        <div class="resp-grid-4" style="margin-bottom:14px;">
+          <div class="resp-kpi"><div class="resp-kpi-label">Current fuel gas spend</div><div class="resp-kpi-val" style="color:#ef4444;">$41K/day</div><div class="resp-kpi-note" style="color:#ef4444;">23% above plan</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Identified saving</div><div class="resp-kpi-val" style="color:#22c55e;">8%</div><div class="resp-kpi-note" style="color:#22c55e;">$3.3K/day · $99K/quarter</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Implementation effort</div><div class="resp-kpi-val" style="color:#22c55e;">SCADA only</div><div class="resp-kpi-note" style="color:#22c55e;">No hardware changes needed</div></div>
+          <div class="resp-kpi"><div class="resp-kpi-label">Time to implement</div><div class="resp-kpi-val" style="color:#22c55e;">&lt; 2 hrs</div><div class="resp-kpi-note" style="color:#22c55e;">Set-point changes only</div></div>
+        </div>
+        <div class="resp-grid-2">
+          <div class="resp-card">
+            <div class="resp-card-title">SCADA set-point change procedure</div>
+            <div class="resp-card-sub">Control room execution · no field activity required</div>
+            <div class="step-list">
+              <div class="step-item"><div class="step-num" style="color:#60a5fa;">01</div><div><div class="step-body"><strong style="color:#fff;">Reset Unit 2 suction valve trim.</strong> SAP PM record shows the suction valve (SV-0221) was adjusted during last month's maintenance and was not returned to the set-point documented in SOP-COMP-003. Change SCADA set-point from current 58% → 78% load target.</div><div class="step-meta"><span class="src-cite sc-sca">SCADA</span> SV-0221 · <span class="src-cite sc-sap">SAP</span> PM record PM-3291</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#60a5fa;">02</div><div><div class="step-body"><strong style="color:#fff;">Reduce Unit 1 load from 88% → 80%.</strong> Unit 1 was automatically over-loaded by the SCADA load-sharing algorithm to compensate for Unit 3 degradation. With Unit 2 restored, Unit 1 can return to its best efficiency point.</div><div class="step-meta"><span class="src-cite sc-sca">SCADA</span> load-share controller · monitor for 15 min</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#60a5fa;">03</div><div><div class="step-body"><strong style="color:#fff;">Reduce Unit 4 load from 91% → 80%.</strong> Unit 4 is operating right of BEP on the performance curve — fuel consumption per MMBTU is 9% higher than at 80% load. OSI Pi efficiency tag CU4.EFF confirms this.</div><div class="step-meta"><span class="src-cite sc-pi">OSI Pi</span> tag CU4.EFF · current: 78% → target: 87%</div></div></div>
+              <div class="step-item"><div class="step-num" style="color:#22c55e;">04</div><div><div class="step-body"><strong style="color:#fff;">Verify throughput holds above 9.0 MMBTU/d</strong> for 30 minutes after changes. OSI Pi will confirm the load redistribution is stable. Update the SCADA load-sharing algorithm baseline to reflect the new operating point so it does not revert automatically.</div><div class="step-meta"><span class="src-cite sc-pi">OSI Pi</span> 30-min monitoring · <span class="src-cite sc-sca">SCADA</span> baseline update</div></div></div>
+            </div>
+          </div>
+          <div class="resp-card">
+            <div class="resp-card-title">Fuel efficiency gain — by unit</div>
+            <div class="resp-card-sub">OSI Pi performance curve data · current vs. target</div>
+            <div class="unit-row"><span class="unit-name" style="font-size:12px;">Unit 1</span><div class="unit-load-wrap"><div class="unit-load-fill" style="width:88%;background:#ef4444;"></div></div><span class="unit-pct" style="color:#ef4444;">88%</span><span class="unit-action" style="color:#22c55e;font-size:11px;">→ 80% saves $1.1K/day</span></div>
+            <div class="unit-row"><span class="unit-name" style="font-size:12px;">Unit 2</span><div class="unit-load-wrap"><div class="unit-load-fill" style="width:58%;background:#f59e0b;"></div></div><span class="unit-pct" style="color:#f59e0b;">58%</span><span class="unit-action" style="color:#22c55e;font-size:11px;">→ 78% saves $0.9K/day</span></div>
+            <div class="unit-row"><span class="unit-name" style="font-size:12px;">Unit 3</span><div class="unit-load-wrap"><div class="unit-load-fill" style="width:0%;background:#ef4444;"></div></div><span class="unit-pct" style="color:#ef4444;">—</span><span class="unit-action" style="color:#ef4444;font-size:11px;">Shutdown pending</span></div>
+            <div class="unit-row"><span class="unit-name" style="font-size:12px;">Unit 4</span><div class="unit-load-wrap"><div class="unit-load-fill" style="width:91%;background:#ef4444;"></div></div><span class="unit-pct" style="color:#ef4444;">91%</span><span class="unit-action" style="color:#22c55e;font-size:11px;">→ 80% saves $1.3K/day</span></div>
+            <div class="unit-row"><span class="unit-name" style="font-size:12px;">Unit 5</span><div class="unit-load-wrap"><div class="unit-load-fill" style="width:78%;background:#22c55e;"></div></div><span class="unit-pct" style="color:#22c55e;">78%</span><span class="unit-action" style="color:#22c55e;font-size:11px;">Optimal — hold</span></div>
+            <div style="height:1px;background:var(--border);margin:10px 0;"></div>
+            <div class="finding-row"><span class="finding-label" style="font-weight:600;color:#fff;">Total daily saving</span><span class="finding-val" style="color:#22c55e;font-size:13px;">$3,300/day</span></div>
+            <div class="finding-row"><span class="finding-label">Monthly saving</span><span class="finding-val" style="color:#22c55e;">$99K/month</span></div>
+            <div class="finding-row"><span class="finding-label">Annual saving</span><span class="finding-val" style="color:#22c55e;">$1.19M/year</span></div>
+            <div class="finding-row"><span class="finding-label">Implementation cost</span><span class="finding-val" style="color:#22c55e;">$0 (set-points only)</span></div>
+            <div class="finding-row"><span class="finding-label">Payback period</span><span class="finding-val" style="color:#22c55e;">Immediate</span></div>
+          </div>
+        </div>`
+    }
+  };
+
+  let activeRec = null;
+
+  function showRec(id, btn) {
+    const panel = document.getElementById('rec-detail-panel');
+
+    // toggle off
+    if (activeRec === id) {
+      panel.style.display = 'none';
+      btn.textContent = 'Ask AI →';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      activeRec = null;
+      return;
+    }
+
+    // deactivate previous button
+    if (activeRec !== null) {
+      const prevBtn = document.getElementById('rec-btn-' + activeRec);
+      if (prevBtn) { prevBtn.textContent = 'Ask AI →'; prevBtn.style.color = ''; prevBtn.style.borderColor = ''; }
+    }
+
+    activeRec = id;
+    btn.textContent = 'Close ✕';
+    btn.style.color = '#f97316';
+    btn.style.borderColor = '#f97316';
+
+    const d = REC_DATA[id];
+    panel.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">AI analysis</div>
+          <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:#fff;">${d.title}</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="font-family:var(--font-mono);font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:${d.riskColor};">${d.risk} risk</span>
+          <span style="font-family:var(--font-mono);font-size:11px;padding:4px 12px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:${d.costColor};">${d.cost}</span>
+        </div>
+      </div>
+      ${d.html}`;
+
+    panel.style.display = 'block';
+    panel.style.animation = 'none';
+    panel.offsetHeight;
+    panel.style.animation = 'fadeIn .3s ease both';
+
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  }
+</script>
 
   const QUERY_CONTENT = {
 
