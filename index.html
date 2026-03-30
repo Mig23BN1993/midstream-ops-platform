@@ -774,18 +774,21 @@
     <div class="chat-title">AI cross-system query — select a topic</div>
     <div class="chat-desc">Each button synthesises live data from SAP · OSI Pi · SCADA · Gensuite · Right Angle into a structured AI response below.</div>
     <div class="quick-q">
-      <button class="q-btn" id="qb-risk"     onclick="showQuery('risk')">Overall risk score today →</button>
-      <button class="q-btn" id="qb-rca"      onclick="showQuery('rca')">Root cause analysis — Unit 3 →</button>
-      <button class="q-btn" id="qb-revenue"  onclick="showQuery('revenue')">Revenue efficiency analysis →</button>
-      <button class="q-btn" id="qb-maint"    onclick="showQuery('maint')">Optimal 30-day maintenance plan →</button>
-      <button class="q-btn" id="qb-comp"     onclick="showQuery('comp')">Compression load optimisation →</button>
-      <button class="q-btn" id="qb-corr"     onclick="showQuery('corr')">Corrosion inhibitor spend audit →</button>
+      <button class="q-btn" id="qb-risk"     onclick="showQuery('risk',this)">Overall risk score today →</button>
+      <button class="q-btn" id="qb-rca"      onclick="showQuery('rca',this)">Root cause analysis — Unit 3 →</button>
+      <button class="q-btn" id="qb-revenue"  onclick="showQuery('revenue',this)">Revenue efficiency analysis →</button>
+      <button class="q-btn" id="qb-maint"    onclick="showQuery('maint',this)">Optimal 30-day maintenance plan →</button>
+      <button class="q-btn" id="qb-comp"     onclick="showQuery('comp',this)">Compression load optimisation →</button>
+      <button class="q-btn" id="qb-corr"     onclick="showQuery('corr',this)">Corrosion inhibitor spend audit →</button>
     </div>
   </div>
 
   <!-- AI RESPONSE PANEL -->
   <div id="ai-response-panel" style="display:none; margin-bottom:40px; animation: fadeIn .35s ease both;">
-    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;" id="ai-resp-label">AI response</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);" id="ai-resp-label">AI response</div>
+      <button onclick="closeQuery()" style="font-family:var(--font-mono);font-size:10px;padding:4px 14px;background:transparent;border:1px solid rgba(239,68,68,.35);color:#f87171;border-radius:20px;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='transparent'">✕ Close</button>
+    </div>
     <div id="ai-resp-inner"></div>
   </div>
 
@@ -793,7 +796,18 @@
 
 <style>
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .q-btn.q-active { background: rgba(56,189,248,.12); border-color: var(--accent2); color: #fff; }
+  .q-btn.q-active {
+    background: rgba(56,189,248,.12);
+    border-color: var(--accent2);
+    color: #fff;
+    padding-right: 10px;
+  }
+  .q-btn.q-active::after {
+    content: ' ✕';
+    font-size: 9px;
+    opacity: 0.7;
+    margin-left: 4px;
+  }
 
   /* response layout helpers */
   .resp-grid-2 { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:14px; margin-bottom:16px; }
@@ -1570,23 +1584,49 @@
   let activeQuery = null;
   let chartInstances = {};
 
-  function showQuery(key) {
+  const Q_LABELS = {
+    risk:    'Overall risk score today →',
+    rca:     'Root cause analysis — Unit 3 →',
+    revenue: 'Revenue efficiency analysis →',
+    maint:   'Optimal 30-day maintenance plan →',
+    comp:    'Compression load optimisation →',
+    corr:    'Corrosion inhibitor spend audit →'
+  };
+
+  function closeQuery() {
+    if (!activeQuery) return;
+    const panel = document.getElementById('ai-response-panel');
+    panel.style.animation = 'none';
+    panel.style.opacity = '0';
+    panel.style.transform = 'translateY(-4px)';
+    panel.style.transition = 'opacity .2s ease, transform .2s ease';
+    setTimeout(() => {
+      panel.style.display = 'none';
+      panel.style.opacity = '';
+      panel.style.transform = '';
+      panel.style.transition = '';
+    }, 200);
+    const btn = document.getElementById('qb-' + activeQuery);
+    if (btn) btn.classList.remove('q-active');
+    activeQuery = null;
+  }
+
+  function showQuery(key, btn) {
     // toggle off if same button clicked again
     if (activeQuery === key) {
-      document.getElementById('ai-response-panel').style.display = 'none';
-      document.getElementById('qb-' + key).classList.remove('q-active');
-      activeQuery = null;
+      closeQuery();
       return;
     }
 
     // deactivate previous
     if (activeQuery) {
-      document.getElementById('qb-' + activeQuery).classList.remove('q-active');
+      const prevBtn = document.getElementById('qb-' + activeQuery);
+      if (prevBtn) prevBtn.classList.remove('q-active');
     }
 
     // activate new
     activeQuery = key;
-    document.getElementById('qb-' + key).classList.add('q-active');
+    btn.classList.add('q-active');
 
     const panel = document.getElementById('ai-response-panel');
     const label = document.getElementById('ai-resp-label');
