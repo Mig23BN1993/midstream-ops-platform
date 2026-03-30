@@ -772,22 +772,27 @@
   <!-- QUERY BOX -->
   <div class="chat-box">
     <div class="chat-title">AI cross-system query — select a topic</div>
-    <div class="chat-desc">Each button synthesises live data from SAP · OSI Pi · SCADA · Gensuite · Right Angle into a structured AI response below.</div>
+    <div class="chat-desc">Click any button to expand its AI analysis. Click again — or press Close — to collapse it.</div>
     <div class="quick-q">
-      <button class="q-btn" id="qb-risk"     onclick="showQuery('risk',this)">Overall risk score today →</button>
-      <button class="q-btn" id="qb-rca"      onclick="showQuery('rca',this)">Root cause analysis — Unit 3 →</button>
-      <button class="q-btn" id="qb-revenue"  onclick="showQuery('revenue',this)">Revenue efficiency analysis →</button>
-      <button class="q-btn" id="qb-maint"    onclick="showQuery('maint',this)">Optimal 30-day maintenance plan →</button>
-      <button class="q-btn" id="qb-comp"     onclick="showQuery('comp',this)">Compression load optimisation →</button>
-      <button class="q-btn" id="qb-corr"     onclick="showQuery('corr',this)">Corrosion inhibitor spend audit →</button>
+      <button class="q-btn" id="qb-risk"    data-label="Overall risk score today"    onclick="showQuery('risk',this)"><span class="qb-icon">▶</span><span class="qb-text">Overall risk score today</span></button>
+      <button class="q-btn" id="qb-rca"     data-label="Root cause analysis — Unit 3" onclick="showQuery('rca',this)"><span class="qb-icon">▶</span><span class="qb-text">Root cause analysis — Unit 3</span></button>
+      <button class="q-btn" id="qb-revenue" data-label="Revenue efficiency analysis"  onclick="showQuery('revenue',this)"><span class="qb-icon">▶</span><span class="qb-text">Revenue efficiency analysis</span></button>
+      <button class="q-btn" id="qb-maint"   data-label="Optimal 30-day maintenance plan" onclick="showQuery('maint',this)"><span class="qb-icon">▶</span><span class="qb-text">Optimal 30-day maintenance plan</span></button>
+      <button class="q-btn" id="qb-comp"    data-label="Compression load optimisation" onclick="showQuery('comp',this)"><span class="qb-icon">▶</span><span class="qb-text">Compression load optimisation</span></button>
+      <button class="q-btn" id="qb-corr"    data-label="Corrosion inhibitor spend audit" onclick="showQuery('corr',this)"><span class="qb-icon">▶</span><span class="qb-text">Corrosion inhibitor spend audit</span></button>
     </div>
   </div>
 
   <!-- AI RESPONSE PANEL -->
-  <div id="ai-response-panel" style="display:none; margin-bottom:40px; animation: fadeIn .35s ease both;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);" id="ai-resp-label">AI response</div>
-      <button onclick="closeQuery()" style="font-family:var(--font-mono);font-size:10px;padding:4px 14px;background:transparent;border:1px solid rgba(239,68,68,.35);color:#f87171;border-radius:20px;cursor:pointer;transition:all .15s;" onmouseover="this.style.background='rgba(239,68,68,.1)'" onmouseout="this.style.background='transparent'">✕ Close</button>
+  <div id="ai-response-panel" style="display:none; margin-bottom:40px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--accent2);display:inline-block;animation:pulse 2s infinite;"></span>
+        <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);" id="ai-resp-label">AI response</span>
+      </div>
+      <button onclick="closeQuery()" id="close-query-btn" style="font-family:var(--font-mono);font-size:10px;padding:5px 16px;background:transparent;border:1px solid rgba(239,68,68,.4);color:#f87171;border-radius:20px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(239,68,68,.12)';this.style.borderColor='rgba(239,68,68,.7)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(239,68,68,.4)'">
+        <span style="font-size:11px;line-height:1;">✕</span> Close
+      </button>
     </div>
     <div id="ai-resp-inner"></div>
   </div>
@@ -797,17 +802,13 @@
 <style>
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
   .q-btn.q-active {
-    background: rgba(56,189,248,.12);
+    background: rgba(56,189,248,.14);
     border-color: var(--accent2);
     color: #fff;
-    padding-right: 10px;
   }
-  .q-btn.q-active::after {
-    content: ' ✕';
-    font-size: 9px;
-    opacity: 0.7;
-    margin-left: 4px;
-  }
+  .q-btn .qb-icon { font-size:9px; transition: transform .2s ease; display:inline-block; }
+  .q-btn.q-active .qb-icon { transform: rotate(90deg); color: var(--accent2); }
+  .q-btn .qb-text { margin-left: 5px; }
 
   /* response layout helpers */
   .resp-grid-2 { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:14px; margin-bottom:16px; }
@@ -1584,73 +1585,75 @@
   let activeQuery = null;
   let chartInstances = {};
 
-  const Q_LABELS = {
-    risk:    'Overall risk score today →',
-    rca:     'Root cause analysis — Unit 3 →',
-    revenue: 'Revenue efficiency analysis →',
-    maint:   'Optimal 30-day maintenance plan →',
-    comp:    'Compression load optimisation →',
-    corr:    'Corrosion inhibitor spend audit →'
-  };
+  function _resetBtn(key) {
+    const btn = document.getElementById('qb-' + key);
+    if (!btn) return;
+    btn.classList.remove('q-active');
+  }
+
+  function _activateBtn(key) {
+    const btn = document.getElementById('qb-' + key);
+    if (!btn) return;
+    btn.classList.add('q-active');
+  }
 
   function closeQuery() {
     if (!activeQuery) return;
     const panel = document.getElementById('ai-response-panel');
-    panel.style.animation = 'none';
-    panel.style.opacity = '0';
-    panel.style.transform = 'translateY(-4px)';
     panel.style.transition = 'opacity .2s ease, transform .2s ease';
+    panel.style.opacity = '0';
+    panel.style.transform = 'translateY(-6px)';
     setTimeout(() => {
       panel.style.display = 'none';
       panel.style.opacity = '';
       panel.style.transform = '';
       panel.style.transition = '';
-    }, 200);
-    const btn = document.getElementById('qb-' + activeQuery);
-    if (btn) btn.classList.remove('q-active');
+    }, 210);
+    _resetBtn(activeQuery);
     activeQuery = null;
   }
 
   function showQuery(key, btn) {
-    // toggle off if same button clicked again
+    // same button — toggle closed
     if (activeQuery === key) {
       closeQuery();
       return;
     }
+    // different button — close old, open new
+    if (activeQuery) _resetBtn(activeQuery);
 
-    // deactivate previous
-    if (activeQuery) {
-      const prevBtn = document.getElementById('qb-' + activeQuery);
-      if (prevBtn) prevBtn.classList.remove('q-active');
-    }
-
-    // activate new
     activeQuery = key;
-    btn.classList.add('q-active');
+    _activateBtn(key);
 
-    const panel = document.getElementById('ai-response-panel');
-    const label = document.getElementById('ai-resp-label');
-    const inner = document.getElementById('ai-resp-inner');
-
+    const panel  = document.getElementById('ai-response-panel');
+    const label  = document.getElementById('ai-resp-label');
+    const inner  = document.getElementById('ai-resp-inner');
     const content = QUERY_CONTENT[key];
+
     label.textContent = content.label;
-    inner.innerHTML = content.html;
-    panel.style.display = 'block';
-    panel.style.animation = 'none';
-    panel.offsetHeight; // reflow
-    panel.style.animation = 'fadeIn .35s ease both';
+    inner.innerHTML   = content.html;
 
-    // scroll to response
-    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    panel.style.display    = 'block';
+    panel.style.opacity    = '0';
+    panel.style.transform  = 'translateY(8px)';
+    panel.style.transition = 'opacity .3s ease, transform .3s ease';
+    panel.offsetHeight; // force reflow
+    panel.style.opacity   = '1';
+    panel.style.transform = 'translateY(0)';
 
-    // animate risk bars after DOM settles
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+
     if (key === 'risk') {
       setTimeout(() => {
         document.querySelectorAll('.risk-bar-fill').forEach(el => {
-          const w = el.style.width; el.style.width = '0';
-          setTimeout(() => { el.style.width = w; }, 50);
+          const w = el.style.width;
+          el.style.transition = 'none';
+          el.style.width = '0';
+          el.offsetHeight;
+          el.style.transition = 'width 1s ease';
+          el.style.width = w;
         });
-      }, 100);
+      }, 150);
     }
   }
 </script>
